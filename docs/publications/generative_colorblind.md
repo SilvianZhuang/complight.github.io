@@ -25,6 +25,9 @@
 
 ## Resources
 
+:material-newspaper-variant: [Manuscript](https://www.kaanaksit.com/assets/pdf/ZhuangEtAl_SigAsia2026_Prompt_driven_color_accessibility_evaluation_in_diffusion_based_image_generation_models.pdf)
+:material-newspaper-variant: [Supplementary](https://www.kaanaksit.com/assets/pdf/ZhuangEtAl_SigAsia2026_Supplementary_Prompt_driven_color_accessibility_evaluation_in_diffusion_based_image_generation_models.pdf)
+:material-newspaper-variant: [Poster](https://www.kaanaksit.com/assets/pdf/ZhuangEtAl_SigAsia2026_Poster_Prompt_driven_color_accessibility_evaluation_in_diffusion_based_image_generation_models.pdf)
 :material-newspaper-variant: [Publication DOI](https://doi.org/10.1145/3829333.3847900)
 :material-file-code: [Code](https://github.com/complight/Prompt-Driven_Color_Accessibility_Evaluation_in_Diffusion-based_Image_Generation_Models)
 
@@ -48,7 +51,8 @@ Generative image models are increasingly integrated into creative workflows, but
 Our results show that prompt-based accessibility interventions are not reliable or uniformly beneficial. The same prompt can improve the metric for one category while worsening it for another, and deficiency-specific prompts do not consistently improve the corresponding simulated condition. These findings suggest that predictable CVD-aware color control requires more than natural-language prompt conditioning alone.
 
 <figure markdown>
-  ![Normalized CVDLoss comparison across Stable Diffusion 3.5-large and FLUX.2 Klein](media/generative_colorblind_main_results.png){ width="1000" }
+  ![Two generated images, their protanopia simulations, and corresponding gradient-magnitude maps](media/generative_colorblind_teaser.png){ width="1000" }
+  <figcaption>Figure 1. Representative candy and flower images under normal vision and simulated protanopia, alongside their gradient-magnitude maps. CVDLoss measures changes in these perceptual color gradients; the highlighted regions show local detail that becomes less distinguishable under simulation.</figcaption>
 </figure>
 
 ## Method
@@ -65,23 +69,24 @@ $$
 
 The metric is evaluated independently for each generated image and then reported in log scale. Prompt results are normalized by subtracting the mean log-scale CVDLoss of the standard prompt for the same model, category, and CVD type.
 
+## Results
+
+The normalized CVDLoss distributions compare accessibility-oriented prompts with the standard-prompt baseline (zero) separately for each model, category, and CVD type. Negative values indicate lower measured degradation; positive values indicate higher degradation. The distributions vary substantially across categories and CVD types, and no prompt strategy consistently improves both models.
+
+<figure markdown>
+  ![Normalized CVDLoss distributions for Stable Diffusion 3.5-large and FLUX.2 Klein across eight categories](media/generative_colorblind_main_results.png){ width="1000" }
+  <figcaption>Figure 2. Log-scale CVDLoss differences relative to each model's standard-prompt baseline for eight image categories. Blue and orange represent protanopia and deuteranopia; the two shades/patterns within each color distinguish Stable Diffusion 3.5-large and FLUX.2 Klein. Values below zero indicate lower measured degradation than the baseline. Each violin shows the distribution over ten generated images for a prompt condition.</figcaption>
+</figure>
+
 ## CVD-ViT Validation
 
 To test whether CVDLoss responds to an explicit accessibility-oriented color transformation, we use CVD-ViT to generate protanopia- and deuteranopia-targeted recolorings. These recolored images are used only as an external validation stage; recoloring is not part of the CVDLoss formulation. Mostly negative shifts in the log-scale comparison indicate that the metric detects the expected reduction in gradient discrepancy after recoloring.
 
 <figure markdown>
   ![CVD-ViT validation using protanopia- and deuteranopia-targeted recoloring](media/generative_colorblind_cvdvit_validation.png){ width="820" }
+  <figcaption>Figure 3. Change in log-scale CVDLoss after CVD-ViT recoloring of Stable Diffusion 3.5-large images at 256 × 256 resolution, grouped by category and target CVD type. Negative values mean the recolored image has lower measured degradation than its resolution-matched original. The plotted distributions are mostly below zero, although some categories include positive outliers.</figcaption>
 </figure>
 
-## Findings
+## Conclusion
 
-Figure 1 summarizes the normalized CVDLoss distributions across categories, prompt types, and CVD conditions. Accessibility-oriented prompts show category- and deficiency-dependent behavior rather than a consistent improvement. This pattern is observed for both main text-to-image models, indicating that prompt-only accessibility control is currently difficult to predict. An additional HiDream-O1 experiment in the supplementary material supports the same qualitative conclusion.
-
-The study motivates future generation methods that incorporate CVD simulation, perceptual accessibility objectives, or explicit post-processing instead of relying on textual instructions alone.
-
-## Relevant Research Works
-
-Here are relevant research works from the authors:
-
-- [Colour Vision Deficiencies Simulation and CVDLoss](https://doi.org/10.1145/3829333.3847900)
-- [Computational Light Laboratory](https://complightlab.com/)
+Across the two main text-to-image models, accessibility-oriented prompts produce category- and deficiency-dependent changes rather than a predictable reduction in CVDLoss. An additional HiDream-O1 experiment, reported in the supplementary material, broadens this comparison. The separate CVD-ViT experiment provides an external check that the metric can respond to explicit recoloring, without treating that recoloring as part of CVDLoss itself. These results motivate more direct CVD-aware generation or post-processing objectives.
